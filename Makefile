@@ -24,10 +24,14 @@ SOFTDEVICE_TYPE	= 212
 ENABLE_PERIPHERAL	= 1
 ENABLE_GPIO			= 1
 ENABLE_TIMER		= 1
-ENABLE_PWM			= 0
 ENABLE_TWI			= 0
 ENABLE_PSTORAGE		= 0
 ###      Please modify these definitions -->
+
+### <!-- User libraries
+# C_SOURCE_FILES += \
+# INC_PATHS += \
+###      User definition area -->
 
 export OUTPUT_FILENAME
 MAKEFILE_NAME := $(MAKEFILE_LIST)
@@ -67,8 +71,6 @@ remduplicates = $(strip $(if $1,$(firstword $1) $(call remduplicates,$(filter-ou
 C_SOURCE_FILES += \
 	$(abspath $(SDK_PATH)/components/toolchain/system_$(CHIPSET_FAMILY_LOWER).c) \
 	$(abspath $(DRIVER_PATH)/delay/nrf_delay.c) \
-	$(abspath $(ROOT_PATH)/softdevice.c) \
-	$(abspath $(ROOT_PATH)/peripheral.c) \
 	$(abspath $(ROOT_PATH)/main.c)
 
 INC_PATHS += \
@@ -84,17 +86,17 @@ INC_PATHS += \
 	-I$(abspath $(LIB_PATH)/util) 
 
 # Segger RTT debugger
+C_SOURCE_FILES += \
+	$(abspath $(SDK_PATH)/external/segger_rtt/SEGGER_RTT.c) \
+	$(abspath $(SDK_PATH)/external/segger_rtt/SEGGER_RTT_printf.c) \
+	$(abspath $(SDK_PATH)/components/libraries/util/nrf_log.c)
+
+INC_PATHS += \
+	-I$(abspath $(SDK_PATH)/external/segger_rtt) \
+	-I$(abspath $(LIB_PATH)/util)
+		
 ifeq ($(DEBUG), 1) 
 	CFLAGS += -D_DEBUG
-	
-	C_SOURCE_FILES += \
-		$(abspath $(SDK_PATH)/external/segger_rtt/SEGGER_RTT.c) \
-		$(abspath $(SDK_PATH)/external/segger_rtt/SEGGER_RTT_printf.c) \
-		$(abspath $(SDK_PATH)/components/libraries/util/nrf_log.c)
-	
-	INC_PATHS += \
-		-I$(abspath $(SDK_PATH)/external/segger_rtt) \
-		-I$(abspath $(LIB_PATH)/util)
 else 
 	CFLAGS += -D_NDEBUG
 endif
@@ -166,9 +168,7 @@ ifeq ($(ENABLE_PSTORAGE), 1)
 	CFLAGS += -DENABLE_PSTORAGE
 
 	C_SOURCE_FILES += \
-		$(abspath $(DRIVER_PATH)/pstorage/pstorage.c) \
-		sync_pstorage.c
-		
+		$(abspath $(DRIVER_PATH)/pstorage/pstorage.c)
 		
 	INC_PATHS += \
 		-I$(abspath $(DRIVER_PATH)/pstorage) \
@@ -189,14 +189,20 @@ BUILD_DIRECTORIES := $(sort $(OBJECT_DIRECTORY) $(OUTPUT_BINARY_DIRECTORY) $(LIS
 CFLAGS += -DSOFTDEVICE_PRESENT
 CFLAGS += -D$(CHIPSET_FAMILY)
 CFLAGS += -DS$(SOFTDEVICE_TYPE)
+
 ifeq ($(ENABLE_BLE), 1)
 	CFLAGS += -DBLE_STACK_SUPPORT_REQD
 endif
+
 ifeq ($(ENABLE_ANT), 1)
 	CFLAGS += -DANT_STACK_SUPPORT_REQD
 endif
+
+ifeq ($(DEBUG), 1)
+	CFLAGS += -DNRF_LOG_USES_RTT=1
+endif
+
 CFLAGS += -DBSP_DEFINES_ONLY
-CFLAGS += -DNRF_LOG_USES_RTT=1
 CFLAGS += -mthumb -mabi=aapcs --std=gnu99
 CFLAGS += -Werror -O3 -g3
 ifeq ("$(CHIPSET_FAMILY)", "NRF51")
