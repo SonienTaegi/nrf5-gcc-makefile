@@ -9,42 +9,42 @@ Universal gcc makefile to compile nrf5 series
 This makefile provides compiling configurations for nordic NRF51 and NRF52 series with any type of NRF5 11 soft device series. Simply replace original makefile with this and modify configuration parameters in the file. Or you may set compile option in shell or eclipse compile configuration. These parameters and compile options are introduced below.
 
 # Compile option
-1. VERBOSE=1
+1. VERBOSE=1<br>
    This is original Makefile option. It is used for making syntax index profiling.
-2. DEBUG=1
+2. DEBUG=1<br>
    To set this compile option will include headers and sources of segger rtt. Also compiling macro _DEBUG will be defined automatically. You may use this option with "ifdef _DEBUG" in your source to make debug and release version at the same time. 
 
 # Makefile configuration
-1. Path
-  a. ROOT_PATH       
+1. Path<br>
+  a. ROOT_PATH<br>       
      Root path of the project. It can be both relative or absoulte path.
-  b. SDK_PATH
+  b. SDK_PATH<br>
      Root path of Soft Device SDK path.
-  c. DRIVER_PATH
+  c. DRIVER_PATH<br>
      Path of drivers_nrf. Mostly $(SDK_PATH)/components/drivers_nrf
-  d. LIB_PATH 		 
+  d. LIB_PATH<br> 		 
      Path of libraries. Mostly $(SDK_PATH)/components/libraries
-  e. TEMPLATE_PATH 
+  e. TEMPLATE_PATH<br> 
      Path of gcc templates. Mostly $(SDK_PATH)/components/toolchain/gcc
 
-2. Chipset configuration
-  a. CHIPSET
+2. Chipset configuration<br>
+  a. CHIPSET<br>
      Name of the chipset. nrf51822 or ntf52832. I have not yet tested other models.
-  b. CHIPSET_FAMILY
+  b. CHIPSET_FAMILY<br>
      Name of chipset family. NRF51 or NRF52. This will automatically set ARM family option : Cortex-m0 / Cortex-m4f.
-  c. CHIPSET_VARIANT
+  c. CHIPSET_VARIANT<br>
      Actually this parameter is now being used just for naming hex file.
 
-3. Soft device
-  a. ENABLE_SOFTDEVICE
+3. Soft device<br>
+  a. ENABLE_SOFTDEVICE<br>
      To set this 1 will includes headers and sources related soft device stack.
-  b. ENABLE_BLE
+  b. ENABLE_BLE<br>
      To set this 1 will includes headers and sources related soft device BLE stack.
-  c. ENABLE_ANT
+  c. ENABLE_ANT<br>
      To set this 1 will includes headers and sources related ANT stack.
 
-4. Peripherals
-  a. ENABLE_PERIPHERAL
+4. Peripherals<br>
+  a. ENABLE_PERIPHERAL<br>
      To set this 1 will includes common headers for using peripheral driver.  
 
   * Currently peripherals below are supported in this Makefile. These will be expanded when I need. ( Just fun! ) I will be
