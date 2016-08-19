@@ -6,7 +6,13 @@ Universal gcc makefile to compile nrf5 series
   Chipset : nrf51822, nrf52832<br>
   Soft device : S130, S132, S212
 
-This makefile provides compiling configurations for nordic NRF51 and NRF52 series with any type of NRF5 11 soft device series. Simply replace original makefile with this and modify configuration parameters in the file. Or you may set compile option in shell or eclipse compile configuration. These parameters and compile options are introduced below.
+This makefile provides compiling configurations for nordic NRF51 and NRF52 series with any type of NRF5 11 soft device series. Simply replace original makefile with this and modify configuration parameters in the file. Or you may set compile option in shell or eclipse compile configuration. These parameters and compile options are introduced below. But before reading it, please read Pre-condition at first. The paragraph contains naming rules of project files.
+
+## Pre-condition
+1. Linker Script<br>
+   .ld file should be named in this manner : chipset_chipset-variant_softdevice type.ld<br>
+   For example : nrf51822_xxaa_s130.ld
+2. Comming soon...
 
 ## Compile option
 1. VERBOSE=1<br>
