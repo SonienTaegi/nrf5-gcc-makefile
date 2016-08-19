@@ -47,9 +47,8 @@ This makefile provides compiling configurations for nordic NRF51 and NRF52 serie
   - ENABLE_PERIPHERAL<br>
      To set this 1 will includes common headers for using peripheral driver.  
      - Currently peripherals below are supported in this Makefile. These will be expanded when I need... or I will be so glad to anybody suggest cases. Plz help me :)
-  
-  - ENABLE_GPIO        // This is for GPIOTE
+  - ENABLE_GPIO // This is for GPIOTE.
   - ENABLE_TIMER
-  - ENABLE_PWM         // Not implemented yet but will be soon.
+  - ENABLE_PWM // Not implemented yet but will be soon.
   - ENABLE_TWI
   - ENABLE_PSTORAGE
