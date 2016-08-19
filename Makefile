@@ -18,7 +18,7 @@ CHIPSET_VARIANT		= xxaa
 ENABLE_SOFTDEVICE	= 1
 ENABLE_BLE			= 0
 ENABLE_ANT			= 1
-SOFTDEVICE_VERSION	= 212
+SOFTDEVICE_TYPE	= 212
 
 # Enable peripherals
 ENABLE_PERIPHERAL	= 1
@@ -74,12 +74,12 @@ C_SOURCE_FILES += \
 INC_PATHS += \
 	-I$(abspath $(ROOT_PATH)) \
 	-I$(abspath $(ROOT_PATH)/config) \
-	-I$(abspath $(ROOT_PATH)/config/s$(SOFTDEVICE_VERSION)) \
+	-I$(abspath $(ROOT_PATH)/config/s$(SOFTDEVICE_TYPE)) \
 	-I$(abspath $(SDK_PATH)/components/toolchain) \
 	-I$(abspath $(SDK_PATH)/components/toolchain/gcc) \
 	-I$(abspath $(SDK_PATH)/components/device) \
 	-I$(abspath $(SDK_PATH)/components/toolchain/CMSIS/Include) \
-	-I$(abspath $(SDK_PATH)/components/softdevice/s$(SOFTDEVICE_VERSION)/headers) \
+	-I$(abspath $(SDK_PATH)/components/softdevice/s$(SOFTDEVICE_TYPE)/headers) \
 	-I$(abspath $(DRIVER_PATH)/delay) \
 	-I$(abspath $(LIB_PATH)/util) 
 
@@ -106,7 +106,7 @@ ifeq ($(ENABLE_SOFTDEVICE), 1)
 		$(abspath $(SDK_PATH)/components/softdevice/common/softdevice_handler/softdevice_handler.c)
 	
 	INC_PATHS += \
-		-I$(abspath $(SDK_PATH)/components/softdevice/s$(SOFTDEVICE_VERSION)/headers) \
+		-I$(abspath $(SDK_PATH)/components/softdevice/s$(SOFTDEVICE_TYPE)/headers) \
 		-I$(abspath $(SDK_PATH)/components/softdevice/common/softdevice_handler) 
 endif
 
@@ -188,7 +188,7 @@ BUILD_DIRECTORIES := $(sort $(OBJECT_DIRECTORY) $(OUTPUT_BINARY_DIRECTORY) $(LIS
 #flags common to all targets
 CFLAGS += -DSOFTDEVICE_PRESENT
 CFLAGS += -D$(CHIPSET_FAMILY)
-CFLAGS += -DS$(SOFTDEVICE_VERSION)
+CFLAGS += -DS$(SOFTDEVICE_TYPE)
 ifeq ($(ENABLE_BLE), 1)
 	CFLAGS += -DBLE_STACK_SUPPORT_REQD
 endif
@@ -227,7 +227,7 @@ LDFLAGS += --specs=nano.specs -lc -lnosys
 ASMFLAGS += -x assembler-with-cpp
 ASMFLAGS += -DSOFTDEVICE_PRESENT
 ASMFLAGS += -D$(CHIPSET_FAMILY)
-ASMFLAGS += -DS$(SOFTDEVICE_VERSION)
+ASMFLAGS += -DS$(SOFTDEVICE_TYPE)
 ifeq ($(ENABLE_BLE), 1)
 	ASMFLAGS += -DBLE_STACK_SUPPORT_REQD
 endif
@@ -237,17 +237,17 @@ endif
 ASMFLAGS += -DBSP_DEFINES_ONLY
 
 #default target - first one defined
-default: flash $(CHIPSET)_$(CHIPSET_VARIANT)_s$(SOFTDEVICE_VERSION)
+default: flash $(CHIPSET)_$(CHIPSET_VARIANT)_s$(SOFTDEVICE_TYPE)
 
 #building all targets
 all: clean
 	$(NO_ECHO)$(MAKE) -f $(MAKEFILE_NAME) -C $(MAKEFILE_DIR) -e cleanobj
-	$(NO_ECHO)$(MAKE) -f $(MAKEFILE_NAME) -C $(MAKEFILE_DIR) -e $(CHIPSET)_$(CHIPSET_VARIANT)_s$(SOFTDEVICE_VERSION)
+	$(NO_ECHO)$(MAKE) -f $(MAKEFILE_NAME) -C $(MAKEFILE_DIR) -e $(CHIPSET)_$(CHIPSET_VARIANT)_s$(SOFTDEVICE_TYPE)
 
 #target for printing all targets
 help:
 	@echo following targets are available:
-	@echo 	$(CHIPSET)_$(CHIPSET_VARIANT)_s$(SOFTDEVICE_VERSION)
+	@echo 	$(CHIPSET)_$(CHIPSET_VARIANT)_s$(SOFTDEVICE_TYPE)
 	@echo 	flash_softdevice
 
 C_SOURCE_FILE_NAMES = $(notdir $(C_SOURCE_FILES))
@@ -263,10 +263,10 @@ vpath %.s $(ASM_PATHS)
 
 OBJECTS = $(C_OBJECTS) $(ASM_OBJECTS)
 
-$(CHIPSET)_$(CHIPSET_VARIANT)_s$(SOFTDEVICE_VERSION): OUTPUT_FILENAME := $(CHIPSET)_$(CHIPSET_VARIANT)_s$(SOFTDEVICE_VERSION)
-$(CHIPSET)_$(CHIPSET_VARIANT)_s$(SOFTDEVICE_VERSION): LINKER_SCRIPT=$(CHIPSET_FAMILY_LOWER)_$(CHIPSET_VARIANT).ld
+$(CHIPSET)_$(CHIPSET_VARIANT)_s$(SOFTDEVICE_TYPE): OUTPUT_FILENAME := $(CHIPSET)_$(CHIPSET_VARIANT)_s$(SOFTDEVICE_TYPE)
+$(CHIPSET)_$(CHIPSET_VARIANT)_s$(SOFTDEVICE_TYPE): LINKER_SCRIPT=$(CHIPSET)_$(CHIPSET_VARIANT)_s$(SOFTDEVICE_TYPE).ld
 
-$(CHIPSET)_$(CHIPSET_VARIANT)_s$(SOFTDEVICE_VERSION): $(BUILD_DIRECTORIES) $(OBJECTS)
+$(CHIPSET)_$(CHIPSET_VARIANT)_s$(SOFTDEVICE_TYPE): $(BUILD_DIRECTORIES) $(OBJECTS)
 	@echo Linking target: $(OUTPUT_FILENAME).out
 	$(NO_ECHO)$(CC) $(LDFLAGS) $(OBJECTS) $(LIBS) -lm -o $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out
 	$(NO_ECHO)$(MAKE) -f $(MAKEFILE_NAME) -C $(MAKEFILE_DIR) -e finalize
@@ -319,13 +319,13 @@ clean:
 
 cleanobj:
 	$(RM) $(BUILD_DIRECTORIES)/*.o
-flash: $(CHIPSET)_$(CHIPSET_VARIANT)_s$(SOFTDEVICE_VERSION)
+flash: $(CHIPSET)_$(CHIPSET_VARIANT)_s$(SOFTDEVICE_TYPE)
 	@echo Flashing: $(OUTPUT_BINARY_DIRECTORY)/$<.hex
 	nrfjprog --program $(OUTPUT_BINARY_DIRECTORY)/$<.hex -f $(CHIPSET_FAMILY_LOWER)  --sectorerase
 	nrfjprog --reset -f $(CHIPSET_FAMILY_LOWER)
 
 ## Flash softdevice
 flash_softdevice:
-	@echo Flashing: s$(SOFTDEVICE_VERSION)_$(CHIPSET_FAMILY_LOWER)_2.0.0_softdevice.hex
-	nrfjprog --program $(SDK_PATH)/components/softdevice/s$(SOFTDEVICE_VERSION)/hex/s$(SOFTDEVICE_VERSION)_$(CHIPSET_FAMILY_LOWER)_2.0.0_softdevice.hex -f $(CHIPSET_FAMILY_LOWER) --chiperase
+	@echo Flashing: s$(SOFTDEVICE_TYPE)_$(CHIPSET_FAMILY_LOWER)_2.0.0_softdevice.hex
+	nrfjprog --program $(SDK_PATH)/components/softdevice/s$(SOFTDEVICE_TYPE)/hex/s$(SOFTDEVICE_TYPE)_$(CHIPSET_FAMILY_LOWER)_2.0.0_softdevice.hex -f $(CHIPSET_FAMILY_LOWER) --chiperase
 	nrfjprog --reset -f $(CHIPSET_FAMILY_LOWER)
