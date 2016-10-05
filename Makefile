@@ -163,6 +163,15 @@ ifeq ($(ENABLE_TIMER), 1)
 		-I$(abspath $(DRIVER_PATH)/timer)
 endif
 
+# Peripheral - twi / i2c
+ifeq ($(ENABLE_TWI), 1)
+	C_SOURCE_FILES += \
+		$(abspath $(DRIVER_PATH)/twi_master/nrf_drv_twi.c) \
+		
+	INC_PATHS += \
+		-I$(abspath $(DRIVER_PATH)/twi_master)
+endif
+
 # Peripheral - pstorage
 ifeq ($(ENABLE_PSTORAGE), 1)
 	CFLAGS += -DENABLE_PSTORAGE
